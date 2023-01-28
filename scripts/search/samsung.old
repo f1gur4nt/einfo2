@@ -1,0 +1,40 @@
+
+
+from requests import get, post
+import re
+import sys
+
+email = sys.argv[1]
+
+def samsung(email):
+  try:
+    head = {"User-Agent":"Mozilla/5.0 (Linux; Android 5.1.1; SM-J200BT Build/LMY47X; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/55.0.2883.91 Mobile Safari/537.36"}
+    res = get(url = "https://account.samsung.com/accounts/v1/MBR/terms?itnlYN=Y",headers=head)
+    html = res.text
+
+    head["X-CSRF-TOKEN"] = re.findall(r"{'token' : '([\w\-?]+)",html)[0]
+    cook = res.cookies.get_dict()
+    dt = {"tncAccepted":"Y","privacyAccepted":"Y","dataCollectionAccented":"","onwardTransferAccepted":"Y","emailReceiveYNFlag":"Y","customizedMarketingCollectionUsageAccepted":"N"}
+    res = post(url = "https://account.samsung.com/accounts/v1/MBR/termsProc?v=1605192669356", headers=head, cookies=cook,json=dt)
+    html = res.text
+    if not "SUCCESS" in html:
+      return False
+
+    cook = res.cookies.get_dict()
+    res = get(url = "https://account.samsung.com/accounts/v1/MBR/signUp", headers=head, cookies=cook)
+    html = res.text
+
+    head["X-CSRF-TOKEN"] = re.findall(r"{'token' : '([\w\-?]+)",html)[0]
+    cook = res.cookies.get_dict()
+    dt = {"emailID":email}
+    res = post(url = "https://account.samsung.com:443/accounts/v1/MBR/signUpCheckEmailIDProc?v=1605194258884", headers=head, cookies=cook,json=dt)
+    html = res.text
+    print(html)
+    if "INVALID_EMAIL_ADDR" in html:
+      print("Found")
+    else:
+      return False
+  except:
+    return False
+
+samsung(email)

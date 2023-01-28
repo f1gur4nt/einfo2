@@ -1,0 +1,30 @@
+
+
+from requests import get,post
+import sys
+import re
+
+email = sys.argv[1]
+
+def quora(email):
+  try:
+    head = {"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0"}
+    res = get(url="https://pt.quora.com/",headers=head)
+    cook = res.cookies.get_dict()
+    html = res.text
+    hash = "1db80096407be846d5581fe1b42b12fd05e0b40a5d3095ed40a0b4bd28f49fe7"
+    head["Content-Type"] = "application/json"
+    head["Quora-Window-Id"] = "react_arcwcixjtgvxzirx"
+    head["Quora-Formkey"] = "1faf9fb18115d22850a7557095b77c53"
+    head["Quora-Broadcast-Id"] = "main-w-chan52-8888-react_arcwcixjtgvxzirx-7ByH"
+    head["Quora-Revision"] = "ca5bf533265224a0773e3432769796bd7455a1b7"
+    head["Quora-Canary-Revision"] = "false"
+
+    dt = {"queryName":"SignupEmailForm_validateEmail_Query","extensions":{"hash":hash},"variables":{"email":email}}
+    res = post(url="https://pt.quora.com/graphql/gql_para_POST?q=SignupEmailForm_validateEmail_Query",headers=head,cookies=cook,data=dt)
+    print(res.text)
+    print(res.status_code)
+  except Exception as e:
+    print(e)
+
+quora(email)

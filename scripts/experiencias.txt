@@ -1,0 +1,4 @@
+
+pinterest: usa oauth, uma desgraça e ainda por so deixa 10 try. tenso muito muito tenso :/
+netflix: nao da pra fazer bruteforce nem em apis antigas.
+spotify: a api http de login misteriosamente nao funciona. unico metodo que funciona no app é login na porta 4070.
