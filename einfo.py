@@ -1,11 +1,13 @@
 
+
+from requests import get,post
 import argparse
 import datetime
 import glob
 import sys
 import os
 import warnings
-# aabb
+
 
 print("""
 
@@ -30,6 +32,14 @@ arg = parser.parse_args()
 def help():
   parser.print_help()
   exit()
+
+def updater():
+  my_version = open(".version.txt","r").read()
+  current_version = get(url="https://raw.githubusercontent.com/f1gur4nt/einfo2/main/.version.txt").text
+  if my_version != current_version:
+    os.system("cd .. && rm -rf einfo2 && git clone https://github.com/f1gur4nt/einfo2")
+    print("Has been updated successfully!! Please restart terminal!")
+    exit()
 
 def load_email_database():
   try:
@@ -175,6 +185,8 @@ def google_search():
 
 def check_pwned():
   os.system(f"python3 scripts/check_pwned.py {email}")
+
+updater()
 
 if arg.email != None:
   email = arg.email
